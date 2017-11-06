@@ -1,0 +1,36 @@
+{
+  "name": "emoji-selector",
+  "version": "1.0.0",
+  "description": "A HTML custom element implementing the `<emoji-selector>` tag.",
+  "main": "emoji-selector.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kiricon/emoji-selector.git"
+  },
+  "keywords": [
+    "emoji",
+    "selector",
+    "picker",
+    "custom",
+    "element"
+  ],
+  "author": "Dominic Valenciana",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Kiricon/emoji-selector/issues"
+  },
+  "homepage": "https://github.com/Kiricon/emoji-selector#readme",
+  "devDependencies": {
+    "@types/node": "^8.0.47",
+    "ts-loader": "^3.1.1",
+    "typescript": "^2.6.1",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.4"
+  },
+  "dependencies": {
+    "emojilib": "^2.2.9"
+  }
+}
