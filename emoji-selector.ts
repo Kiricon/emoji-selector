@@ -1,4 +1,4 @@
-const emojilib = require('emojilib');
+const emojis = require('./emojis');
 /**
  * The template that is used for the shadow root for every copy of your element,
  * which houses the styles and layout for the element.
@@ -10,12 +10,14 @@ template.innerHTML = `
             display: block;
         }
     </style>
+    <div></div>
 `;
 
 /**
  * This is the class that controls each instance of your custom element.
  */
 class EmojiSelector extends HTMLElement {
+    container: HTMLDivElement;
     /**
      * Part of the custom element spec. Returns an array of strings that are 
      * the names of attributes that this element observes/listens to.
@@ -34,6 +36,7 @@ class EmojiSelector extends HTMLElement {
         this.attachShadow({mode: "open"});
         if(this.shadowRoot) {
             this.shadowRoot.appendChild(template.content.cloneNode(true));
+            this.container = <HTMLDivElement>this.shadowRoot.querySelector('div');
         }
 
         // add any initial variables here
@@ -45,7 +48,7 @@ class EmojiSelector extends HTMLElement {
      * cases.
      */
     connectedCallback() {
-        
+        this.container.innerHTML = emojis['grinning'].char;
     }
 
     /**
