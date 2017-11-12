@@ -32,17 +32,48 @@ const template = document.createElement("template");
 template.innerHTML = `
     <style>
         :host {
-            display: block;
-            width: 300px;
+            
+        }
+
+        #emojiPopup {
+            width: 0px;
             background: white;
             border-radius: 3px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+            overflow:hidden;
+            transition: all ease 0.5s;
+            border-radius: 150px;
+            height: 0px;
+            margin-top: 150px;
+            margin-left: 150px;
+        }
+
+        #emojiPopup.open {
+            display: block;
+            width: 300px;
+            border-radius: 3px;
+            height: 300px;
+            margin-top: 0px;
+            margin-left: 0px;
+        }
+
+        #emojiPopup.open .container, #emojiPopup.open fun-tabs {
+            opacity: 1;
+            transition-delay: 0.5s;
+        }
+
+        .content {
+            height: 260px;
+            overflow:hidden;
         }
 
         .container {
             display: none;
             padding: 10px;
-            max-height: 200px;
             overflow-y: auto;
+            height: calc(100% - 20px);
+            opacity: 0;
+            transition: ease opacity 0.3s;
         }
         .container.selected  {
             display: block;
@@ -57,23 +88,41 @@ template.innerHTML = `
 
         fun-tabs {
             border-bottom: solid 1px #eee;
+            height: 40px;
+            margin: 0px auto;
+            opacity: 0;
+            transition: ease opacity 0.3s;
+            width: 288px;
         }
 
         fun-tab {
             padding: 5px 10px;
         }
+        fun-tab, .emoji {
+            background: white;
+            transition: ease background 0.3s;
+            border-radius: 3px;
+        }
+        fun-tab:hover, .emoji:hover {
+            background: #eee;
+        }
     </style>
-    <fun-tabs selected="0">${tabTemplate}</fun-tabs>
-    <div class="content">${contentTemplate}</div>
+    <button>open</button>
+    <div id="emojiPopup">
+        <fun-tabs selected="0">${tabTemplate}</fun-tabs>
+        <div class="content">${contentTemplate}</div>
+    </div>
 `;
 
 /**
  * This is the class that controls each instance of your custom element.
  */
 class EmojiSelector extends HTMLElement {
-    tabContainer: Element;
+    tabContainer: any;
     tabs: NodeListOf<Element>;
     containers: NodeListOf<Element>;
+    openButton: Element;
+    popupWindow: Element;
     /**
      * Part of the custom element spec. Returns an array of strings that are 
      * the names of attributes that this element observes/listens to.
@@ -92,9 +141,11 @@ class EmojiSelector extends HTMLElement {
         this.attachShadow({mode: "open"});
         if(this.shadowRoot) {
             this.shadowRoot.appendChild(template.content.cloneNode(true));
-            this.tabContainer = <Element>this.shadowRoot.querySelector('fun-tabs');
+            this.tabContainer = <any>this.shadowRoot.querySelector('fun-tabs');
             this.tabs = this.shadowRoot.querySelectorAll('fun-tab');
             this.containers = this.shadowRoot.querySelectorAll('.container');
+            this.openButton = <Element>this.shadowRoot.querySelector('button');
+            this.popupWindow = <Element>this.shadowRoot.querySelector('#emojiPopup');
         }
 
         // add any initial variables here
@@ -116,6 +167,11 @@ class EmojiSelector extends HTMLElement {
                 this.containers[i].className = 'container selected';
             });
         }
+
+        const self = this;
+        this.openButton.addEventListener('click', () => {
+            this.popupWindow.className = 'open';
+        });
     }
 
     /**
