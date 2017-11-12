@@ -5,12 +5,23 @@ const emojisByCategory: IEmojisByCategory = {}
 
 let createdTabs: { [category: string]: boolean} = {};
 let tabTemplate = ``;
+let contentContainers: { [category: string]: string } = {};
+
 for(let name in emojis) {
     if(createdTabs[emojis[name].category] === undefined) {
         let newTab = document.createElement('fun-tab');
         tabTemplate += `<fun-tab>${emojis[name].char}</fun-tab>`
         createdTabs[emojis[name].category] = true;
+        contentContainers[emojis[name].category] = `<div class="container">`;
     }
+
+    contentContainers[emojis[name].category] += `<div class="emoji">${emojis[name].char}</div>`;
+}
+
+let contentTemplate = ``;
+
+for(let category in contentContainers) {
+    contentTemplate += `${contentContainers[category]}</div>`;
 }
 
 /**
@@ -22,9 +33,38 @@ template.innerHTML = `
     <style>
         :host {
             display: block;
+            width: 300px;
+            background: white;
+            border-radius: 3px;
+        }
+
+        .container {
+            display: none;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .container.selected  {
+            display: block;
+        }
+        .emoji {
+            float: left;
+            padding: 4px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        fun-tabs {
+            border-bottom: solid 1px #eee;
+        }
+
+        fun-tab {
+            padding: 5px 10px;
         }
     </style>
     <fun-tabs selected="0">${tabTemplate}</fun-tabs>
+    <div class="content">${contentTemplate}</div>
 `;
 
 /**
@@ -32,6 +72,8 @@ template.innerHTML = `
  */
 class EmojiSelector extends HTMLElement {
     tabContainer: Element;
+    tabs: NodeListOf<Element>;
+    containers: NodeListOf<Element>;
     /**
      * Part of the custom element spec. Returns an array of strings that are 
      * the names of attributes that this element observes/listens to.
@@ -51,6 +93,8 @@ class EmojiSelector extends HTMLElement {
         if(this.shadowRoot) {
             this.shadowRoot.appendChild(template.content.cloneNode(true));
             this.tabContainer = <Element>this.shadowRoot.querySelector('fun-tabs');
+            this.tabs = this.shadowRoot.querySelectorAll('fun-tab');
+            this.containers = this.shadowRoot.querySelectorAll('.container');
         }
 
         // add any initial variables here
@@ -62,6 +106,16 @@ class EmojiSelector extends HTMLElement {
      * cases.
      */
     connectedCallback() {
+        this.containers[0].className = 'container selected';
+        for(let i = 0; i < this.tabs.length; i++) {
+            this.tabs[i].addEventListener('click', () => {
+                for(let x = 0; x < this.containers.length; x++) {
+                    this.containers[x].className = 'container';
+                }
+
+                this.containers[i].className = 'container selected';
+            });
+        }
     }
 
     /**
