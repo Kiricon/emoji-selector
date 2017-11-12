@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A HTML custom element implementing the `<emoji-selector>` tag.",
   "main": "emoji-selector.js",
+  "types": "emoji-selector.d.ts",
   "scripts": {
     "start": "webpack-dev-server --watch-poll",
     "test": "echo \"Error: no test specified\" && exit 1"
