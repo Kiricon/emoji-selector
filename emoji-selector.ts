@@ -46,6 +46,7 @@ template.innerHTML = `
             height: 0px;
             margin-top: 150px;
             margin-left: 150px;
+            position: absolute;
         }
 
         #emojiPopup.open {
@@ -122,7 +123,7 @@ class EmojiSelector extends HTMLElement {
     tabs: NodeListOf<Element>;
     containers: NodeListOf<Element>;
     openButton: Element;
-    popupWindow: Element;
+    popupWindow: HTMLElement;
     /**
      * Part of the custom element spec. Returns an array of strings that are 
      * the names of attributes that this element observes/listens to.
@@ -145,7 +146,7 @@ class EmojiSelector extends HTMLElement {
             this.tabs = this.shadowRoot.querySelectorAll('fun-tab');
             this.containers = this.shadowRoot.querySelectorAll('.container');
             this.openButton = <Element>this.shadowRoot.querySelector('button');
-            this.popupWindow = <Element>this.shadowRoot.querySelector('#emojiPopup');
+            this.popupWindow = <HTMLElement>this.shadowRoot.querySelector('#emojiPopup');
         }
 
         // add any initial variables here
@@ -170,6 +171,10 @@ class EmojiSelector extends HTMLElement {
 
         const self = this;
         this.openButton.addEventListener('click', () => {
+            
+            const offset = this.findTopLeft(this.openButton);
+            this.popupWindow.style.top = (offset.top-150)+'px';
+            this.popupWindow.style.left = (offset.left-150)+'px';
             this.popupWindow.className = 'open';
         });
     }
@@ -193,6 +198,11 @@ class EmojiSelector extends HTMLElement {
      */
     attributeChangedCallback(name: string, oldValue: string | number, newValue: string | number) {
         // respond to a changed attribute here
+    }
+
+    findTopLeft(element: Element) {
+        const rec = element.getBoundingClientRect();
+        return {top: rec.top + window.scrollY, left: rec.left + window.scrollX};
     }
 }
 
