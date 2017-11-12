@@ -191,11 +191,7 @@ class EmojiSelector extends HTMLElement {
 
         const self = this;
         this.openButton.addEventListener('click', () => {
-            
-            const offset = this.findTopLeft(this.openButton);
-            this.popupWindow.style.top = (offset.top-150+15)+'px';
-            this.popupWindow.style.left = (offset.left-150+15)+'px';
-            this.popupWindow.className = 'open';
+            this.open();
         });
 
 
@@ -227,6 +223,13 @@ class EmojiSelector extends HTMLElement {
      */
     attributeChangedCallback(name: string, oldValue: string | number, newValue: string | number) {
         // respond to a changed attribute here
+    }
+
+    open(): void {
+        const offset = this.findTopLeft(this.openButton);
+        this.popupWindow.style.top = (offset.top-150+15)+'px';
+        this.popupWindow.style.left = (offset.left-150+15)+'px';
+        this.popupWindow.className = 'open';
     }
 
     close(): void {
