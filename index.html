@@ -23,5 +23,12 @@
     <body>
         <emoji-selector></emoji-selector>
         <script src="emoji-selector.bundle.js"></script>
+        <script>
+            let emojiSelector = document.querySelector('emoji-selector');
+            emojiSelector.emojiSelected = (char) => {
+                console.log(char);
+                emojiSelector.close();
+            };
+        </script>
     </body>
 </html>

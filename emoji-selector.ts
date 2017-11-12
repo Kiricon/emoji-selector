@@ -47,6 +47,7 @@ template.innerHTML = `
             margin-top: 150px;
             margin-left: 150px;
             position: absolute;
+            will-change: opacity, margin, height, width;
         }
 
         #emojiPopup.open {
@@ -65,6 +66,7 @@ template.innerHTML = `
 
         .content {
             height: 260px;
+            width: 300px;
             overflow:hidden;
         }
 
@@ -81,9 +83,9 @@ template.innerHTML = `
         }
         .emoji {
             float: left;
-            padding: 4px;
-            width: 20px;
-            height: 20px;
+            padding: 0px 4px 6px 4px;
+            width: 22px;
+            height: 22px;
             cursor: pointer;
         }
 
@@ -138,6 +140,9 @@ class EmojiSelector extends HTMLElement {
     containers: NodeListOf<Element>;
     openButton: Element;
     popupWindow: HTMLElement;
+    emojis: NodeListOf<Element>;
+    emojiSelected?: any;
+
     /**
      * Part of the custom element spec. Returns an array of strings that are 
      * the names of attributes that this element observes/listens to.
@@ -146,7 +151,7 @@ class EmojiSelector extends HTMLElement {
      *  attribute.
      */
     static get observedAttributes() {
-        return [];
+        return ['open'];
     };
 
     constructor() {
@@ -161,6 +166,7 @@ class EmojiSelector extends HTMLElement {
             this.containers = this.shadowRoot.querySelectorAll('.container');
             this.openButton = <Element>this.shadowRoot.querySelector('button');
             this.popupWindow = <HTMLElement>this.shadowRoot.querySelector('#emojiPopup');
+            this.emojis = this.shadowRoot.querySelectorAll('.emoji');
         }
 
         // add any initial variables here
@@ -191,6 +197,15 @@ class EmojiSelector extends HTMLElement {
             this.popupWindow.style.left = (offset.left-150+15)+'px';
             this.popupWindow.className = 'open';
         });
+
+
+        for(let i = 0; i < this.emojis.length; i++) {
+            this.emojis[i].addEventListener('click', () => {
+                if(typeof this.emojiSelected === 'function') {
+                    this.emojiSelected(this.emojis[i].innerHTML);
+                }
+            });
+        }
     }
 
     /**
@@ -212,6 +227,10 @@ class EmojiSelector extends HTMLElement {
      */
     attributeChangedCallback(name: string, oldValue: string | number, newValue: string | number) {
         // respond to a changed attribute here
+    }
+
+    close(): void {
+        this.popupWindow.className = '';
     }
 
     findTopLeft(element: Element) {
