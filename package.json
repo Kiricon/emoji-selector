@@ -32,6 +32,7 @@
     "webpack-dev-server": "^2.9.4"
   },
   "dependencies": {
-    "emojilib": "^2.2.9"
+    "emojilib": "^2.2.9",
+    "fun-tabs": "^1.0.3"
   }
 }

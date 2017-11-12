@@ -1,16 +1,17 @@
+import 'fun-tabs';
 import {IEmojis, IEmoji, IEmojisByCategory} from './IEmojis';
 import emojis from './emojis';
 const emojisByCategory: IEmojisByCategory = {}
 
+let createdTabs: { [category: string]: boolean} = {};
+let tabTemplate = ``;
 for(let name in emojis) {
-    let emoji = emojis[name];
-    if(emojisByCategory[emoji.category] === undefined) {
-        emojisByCategory[emoji.category] = {};
+    if(createdTabs[emojis[name].category] === undefined) {
+        let newTab = document.createElement('fun-tab');
+        tabTemplate += `<fun-tab>${emojis[name].char}</fun-tab>`
+        createdTabs[emojis[name].category] = true;
     }
-    emojisByCategory[emoji.category][name] = emojis[name];
 }
-
-console.log(emojisByCategory);
 
 /**
  * The template that is used for the shadow root for every copy of your element,
@@ -23,14 +24,14 @@ template.innerHTML = `
             display: block;
         }
     </style>
-    <div></div>
+    <fun-tabs selected="0">${tabTemplate}</fun-tabs>
 `;
 
 /**
  * This is the class that controls each instance of your custom element.
  */
 class EmojiSelector extends HTMLElement {
-    container: HTMLDivElement;
+    tabContainer: Element;
     /**
      * Part of the custom element spec. Returns an array of strings that are 
      * the names of attributes that this element observes/listens to.
@@ -49,7 +50,7 @@ class EmojiSelector extends HTMLElement {
         this.attachShadow({mode: "open"});
         if(this.shadowRoot) {
             this.shadowRoot.appendChild(template.content.cloneNode(true));
-            this.container = <HTMLDivElement>this.shadowRoot.querySelector('div');
+            this.tabContainer = <Element>this.shadowRoot.querySelector('fun-tabs');
         }
 
         // add any initial variables here
@@ -61,7 +62,6 @@ class EmojiSelector extends HTMLElement {
      * cases.
      */
     connectedCallback() {
-        this.container.innerHTML = emojis['grinning'].char;
     }
 
     /**
