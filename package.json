@@ -1,6 +1,6 @@
 {
   "name": "emoji-selector",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A HTML custom element implementing the `<emoji-selector>` tag.",
   "main": "emoji-selector.js",
   "types": "emoji-selector.d.ts",
@@ -33,7 +33,6 @@
     "webpack-dev-server": "^2.9.4"
   },
   "dependencies": {
-    "emojilib": "^2.2.9",
     "fun-tabs": "^1.0.3"
   }
 }
