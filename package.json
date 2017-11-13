@@ -1,6 +1,6 @@
 {
   "name": "emoji-selector",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A HTML custom element implementing the `<emoji-selector>` tag.",
   "main": "emoji-selector.js",
   "types": "emoji-selector.d.ts",
