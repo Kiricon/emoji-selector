@@ -206,6 +206,18 @@ class EmojiSelector extends HTMLElement {
                 }
             });
         }
+
+        window.addEventListener('click', () => {
+            this.close();
+        });
+
+        this.popupWindow.addEventListener('click', (e: Event) => {
+            e.stopPropagation();
+        });
+        
+        this.openButton.addEventListener('click', (e: Event) => {
+            e.stopPropagation();
+        });
     }
 
     /**
