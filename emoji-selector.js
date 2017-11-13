@@ -82,15 +82,17 @@ template.innerHTML = `
             width: 22px;
             height: 22px;
             cursor: pointer;
+            text-align: center;
         }
 
         fun-tabs {
             border-bottom: solid 1px #eee;
-            height: 40px;
             margin: 0px auto;
             opacity: 0;
             transition: ease opacity 0.3s;
             width: 288px;
+            height: 38px;
+            margin-top: 2px;
         }
 
         fun-tab {
@@ -112,10 +114,17 @@ template.innerHTML = `
             padding: 0px;
             height: 30px;
             width: 30px;
+            background: rgba(255, 255, 255, 0);
+            transition: background ease 0.3s;
+            border-radius: 50%;
         }
 
         button:focus {
             outline: none;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 1);
         }
     </style>
     <button>
@@ -133,17 +142,6 @@ template.innerHTML = `
  * This is the class that controls each instance of your custom element.
  */
 class EmojiSelector extends HTMLElement {
-    /**
-     * Part of the custom element spec. Returns an array of strings that are
-     * the names of attributes that this element observes/listens to.
-     *
-     * @returns {Array} an array of strings, each of which representing an
-     *  attribute.
-     */
-    static get observedAttributes() {
-        return ['open'];
-    }
-    ;
     constructor() {
         super();
         // create shadow root for any children context
@@ -185,6 +183,15 @@ class EmojiSelector extends HTMLElement {
                 }
             });
         }
+        window.addEventListener('click', () => {
+            this.close();
+        });
+        this.popupWindow.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+        this.openButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
     }
     /**
      * Part of the custom element spec. Called after your element is remove from
@@ -215,7 +222,11 @@ class EmojiSelector extends HTMLElement {
     }
     findTopLeft(element) {
         const rec = element.getBoundingClientRect();
-        return { top: rec.top + window.scrollY, left: rec.left + window.scrollX };
+        let top = rec.top + window.scrollY;
+        top = top < 150 ? 150 : top;
+        let left = rec.left + window.scrollX;
+        left = left < 150 ? 150 : left;
+        return { top: top, left: left };
     }
 }
 customElements.define("emoji-selector", EmojiSelector);
