@@ -87,15 +87,17 @@ template.innerHTML = `
             width: 22px;
             height: 22px;
             cursor: pointer;
+            text-align: center;
         }
 
         fun-tabs {
             border-bottom: solid 1px #eee;
-            height: 40px;
             margin: 0px auto;
             opacity: 0;
             transition: ease opacity 0.3s;
             width: 288px;
+            height: 38px;
+            margin-top: 2px;
         }
 
         fun-tab {
@@ -117,10 +119,17 @@ template.innerHTML = `
             padding: 0px;
             height: 30px;
             width: 30px;
+            background: rgba(255, 255, 255, 0);
+            transition: background ease 0.3s;
+            border-radius: 50%;
         }
 
         button:focus {
             outline: none;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 1);
         }
     </style>
     <button>
