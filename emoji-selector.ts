@@ -147,17 +147,6 @@ class EmojiSelector extends HTMLElement {
     emojis: NodeListOf<Element>;
     emojiSelected?: any;
 
-    /**
-     * Part of the custom element spec. Returns an array of strings that are 
-     * the names of attributes that this element observes/listens to.
-     * 
-     * @returns {Array} an array of strings, each of which representing an 
-     *  attribute.
-     */
-    static get observedAttributes() {
-        return ['open'];
-    };
-
     constructor() {
         super();
 
@@ -254,7 +243,13 @@ class EmojiSelector extends HTMLElement {
 
     findTopLeft(element: Element) {
         const rec = element.getBoundingClientRect();
-        return {top: rec.top + window.scrollY, left: rec.left + window.scrollX};
+        let top = rec.top + window.scrollY;
+        top = top < 150 ? 150 : top;
+
+        let left = rec.left + window.scrollX;
+        left = left < 150 ? 150 : left;
+
+        return {top: top, left: left};
     }
 }
 
