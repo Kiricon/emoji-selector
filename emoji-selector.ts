@@ -1,6 +1,7 @@
 import 'fun-tabs';
 import {IEmojis, IEmoji, IEmojisByCategory} from './IEmojis';
 import emojis from './emojis';
+import { Event } from '_debugger';
 const emojisByCategory: IEmojisByCategory = {}
 
 let createdTabs: { [category: string]: boolean} = {};
@@ -151,10 +152,11 @@ class EmojiSelector extends HTMLElement {
     tabContainer: any;
     tabs: NodeListOf<Element>;
     containers: NodeListOf<Element>;
-    openButton: Element;
+    openButton: HTMLElement;
     popupWindow: HTMLElement;
     emojis: NodeListOf<Element>;
     emojiSelected?: any;
+    svg: SVGSVGElement;
 
     constructor() {
         super();
@@ -166,9 +168,10 @@ class EmojiSelector extends HTMLElement {
             this.tabContainer = <any>this.shadowRoot.querySelector('fun-tabs');
             this.tabs = this.shadowRoot.querySelectorAll('fun-tab');
             this.containers = this.shadowRoot.querySelectorAll('.container');
-            this.openButton = <Element>this.shadowRoot.querySelector('button');
+            this.openButton = <HTMLElement>this.shadowRoot.querySelector('button');
             this.popupWindow = <HTMLElement>this.shadowRoot.querySelector('#emojiPopup');
             this.emojis = this.shadowRoot.querySelectorAll('.emoji');
+            this.svg = <SVGSVGElement>this.shadowRoot.querySelector('svg');
         }
 
         // add any initial variables here
@@ -192,9 +195,10 @@ class EmojiSelector extends HTMLElement {
         }
 
         const self = this;
-        this.openButton.addEventListener('click', () => {
-            this.open();
-        });
+        this.openButton.addEventListener('click', (e: any) => {
+
+            this.open({top: e.clientY, left: e.clientX});
+        }, true);
 
 
         for(let i = 0; i < this.emojis.length; i++) {
@@ -209,13 +213,26 @@ class EmojiSelector extends HTMLElement {
             this.close();
         });
 
-        this.popupWindow.addEventListener('click', (e: Event) => {
+        this.popupWindow.addEventListener('click', (e) => {
             e.stopPropagation();
         });
         
-        this.openButton.addEventListener('click', (e: Event) => {
+        this.openButton.addEventListener('click', (e) => {
             e.stopPropagation();
         });
+
+        if(this.getAttribute('padding') !== null) {
+            this.openButton.style.padding = this.getAttribute('padding');
+        }
+
+        const size = this.getAttribute('size');
+
+        if(size !== null) {
+            this.openButton.style.height = size;
+            this.openButton.style.width = size;
+            this.svg.style.height = size.replace('px', '');
+            this.svg.style.width = size.replace('px', '');
+        }
     }
 
     /**
@@ -239,10 +256,9 @@ class EmojiSelector extends HTMLElement {
         // respond to a changed attribute here
     }
 
-    open(): void {
-        const offset = this.findTopLeft(this.openButton);
-        this.popupWindow.style.top = (offset.top-150+15)+'px';
-        this.popupWindow.style.left = (offset.left-150+15)+'px';
+    open(offset: {top: number, left: number}): void {
+        this.popupWindow.style.top = (offset.top-150)+'px';
+        this.popupWindow.style.left = (offset.left-150)+'px';
         this.popupWindow.className = 'open';
     }
 
@@ -250,16 +266,6 @@ class EmojiSelector extends HTMLElement {
         this.popupWindow.className = '';
     }
 
-    findTopLeft(element: Element) {
-        const rec = element.getBoundingClientRect();
-        let top = rec.top + window.scrollY;
-        top = top < 150 ? 150 : top;
-
-        let left = rec.left + window.scrollX;
-        left = left < 150 ? 150 : left;
-
-        return {top: top, left: left};
-    }
 }
 
 customElements.define("emoji-selector", EmojiSelector);

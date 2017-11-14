@@ -154,6 +154,7 @@ class EmojiSelector extends HTMLElement {
             this.openButton = this.shadowRoot.querySelector('button');
             this.popupWindow = this.shadowRoot.querySelector('#emojiPopup');
             this.emojis = this.shadowRoot.querySelectorAll('.emoji');
+            this.svg = this.shadowRoot.querySelector('svg');
         }
         // add any initial variables here
     }
@@ -173,9 +174,9 @@ class EmojiSelector extends HTMLElement {
             });
         }
         const self = this;
-        this.openButton.addEventListener('click', () => {
-            this.open();
-        });
+        this.openButton.addEventListener('click', (e) => {
+            this.open({ top: e.clientY, left: e.clientX });
+        }, true);
         for (let i = 0; i < this.emojis.length; i++) {
             this.emojis[i].addEventListener('click', () => {
                 if (typeof this.emojiSelected === 'function') {
@@ -192,6 +193,16 @@ class EmojiSelector extends HTMLElement {
         this.openButton.addEventListener('click', (e) => {
             e.stopPropagation();
         });
+        if (this.getAttribute('padding') !== null) {
+            this.openButton.style.padding = this.getAttribute('padding');
+        }
+        const size = this.getAttribute('size');
+        if (size !== null) {
+            this.openButton.style.height = size;
+            this.openButton.style.width = size;
+            this.svg.style.height = size.replace('px', '');
+            this.svg.style.width = size.replace('px', '');
+        }
     }
     /**
      * Part of the custom element spec. Called after your element is remove from
@@ -211,22 +222,13 @@ class EmojiSelector extends HTMLElement {
     attributeChangedCallback(name, oldValue, newValue) {
         // respond to a changed attribute here
     }
-    open() {
-        const offset = this.findTopLeft(this.openButton);
-        this.popupWindow.style.top = (offset.top - 150 + 15) + 'px';
-        this.popupWindow.style.left = (offset.left - 150 + 15) + 'px';
+    open(offset) {
+        this.popupWindow.style.top = (offset.top - 150) + 'px';
+        this.popupWindow.style.left = (offset.left - 150) + 'px';
         this.popupWindow.className = 'open';
     }
     close() {
         this.popupWindow.className = '';
-    }
-    findTopLeft(element) {
-        const rec = element.getBoundingClientRect();
-        let top = rec.top + window.scrollY;
-        top = top < 150 ? 150 : top;
-        let left = rec.left + window.scrollX;
-        left = left < 150 ? 150 : left;
-        return { top: top, left: left };
     }
 }
 customElements.define("emoji-selector", EmojiSelector);
